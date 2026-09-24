@@ -1,0 +1,24 @@
+services:
+
+  todo-service:
+    build:
+      context: .
+      dockerfile: todo_service/Dockerfile
+    ports:
+      - "5001:5001"
+    volumes:
+      - todo-data:/app/instance
+
+  gateway-service:
+    build:
+      context: .
+      dockerfile: gateway_service/Dockerfile
+    ports:
+      - "5000:5000"
+    environment:
+      TODO_SERVICE_URL: http://todo-service:5001
+    depends_on:
+      - todo-service
+
+volumes:
+  todo-data:
