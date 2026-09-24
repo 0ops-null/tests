@@ -5,6 +5,7 @@ on:
   pull_request:
 
 jobs:
+
   test:
     name: Run tests
     runs-on: ubuntu-latest
@@ -23,16 +24,27 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      - name: Run tests
+      - name: Run unit and contract tests
         run: pytest -v
 
   build:
-    name: Build Docker image
+    name: Build Docker images
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v6
 
-      - name: Build Docker image
-        run: docker build -t flask-todo:latest .
+      - name: Build Todo Service
+        run: |
+          docker build \
+            -f todo_service/Dockerfile \
+            -t todo-service:latest \
+            .
+
+      - name: Build Gateway Service
+        run: |
+          docker build \
+            -f gateway_service/Dockerfile \
+            -t gateway-service:latest \
+            .
